@@ -1,33 +1,47 @@
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
 import { AppBar, Toolbar, Typography, Button, Container, Box } from '@mui/material';
-import { useAuthenticator } from '@aws-amplify/ui-react'; // Import useAuthenticator
-// import AttendanceManagement from './pages/AttendanceManagement';
-// import EmployeeManagement from './pages/EmployeeManagement';
-// import AttedndanceAnalytics from './pages/AttednanceAnalytics';
+import { useAuthenticator } from '@aws-amplify/ui-react';
+import { useState } from 'react';
+
+// Placeholder components for the pages
+const EmployeeManagement = () => <div>Employee Management Page</div>;
+const AttendanceManagement = () => <div>Attendance Management Page</div>;
+const AttendanceAnalytics = () => <div>Attendance Analytics Page</div>;
 
 function App() {
-  const { signOut } = useAuthenticator(); // Extract signOut from useAuthenticator
+  const { signOut } = useAuthenticator();
+  const [currentPage, setCurrentPage] = useState('employee'); // State to track the current page
 
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to log out?')) {
-      signOut(); // Call the signOut function
+      signOut();
+    }
+  };
+
+  const renderPage = () => {
+    switch (currentPage) {
+      case 'employee':
+        return <EmployeeManagement />;
+      case 'attendance':
+        return <AttendanceManagement />;
+      case 'analytics':
+        return <AttendanceAnalytics />;
+      default:
+        return <EmployeeManagement />;
     }
   };
 
   return (
-    <Router>
+    <>
       <Box sx={{ flexGrow: 1 }}>
-        {/* Material-UI AppBar */}
         <AppBar position="static">
           <Toolbar>
             <Typography variant="h6" sx={{ flexGrow: 2 }}>
               Attendance System Admin Portal
             </Typography>
-            {/* Navigation Links */}
             <Box
               sx={{
                 display: 'flex',
-                gap: 2, // Space between buttons
+                gap: 2,
               }}
             >
               <Box
@@ -39,7 +53,7 @@ function App() {
                   backgroundColor: 'primary.light',
                 }}
               >
-                <Button color="inherit" component={Link} to="/">
+                <Button color="inherit" onClick={() => setCurrentPage('employee')}>
                   Employee Management
                 </Button>
               </Box>
@@ -52,7 +66,7 @@ function App() {
                   backgroundColor: 'primary.light',
                 }}
               >
-                <Button color="inherit" component={Link} to="/attendance">
+                <Button color="inherit" onClick={() => setCurrentPage('attendance')}>
                   Attendance Management
                 </Button>
               </Box>
@@ -65,11 +79,10 @@ function App() {
                   backgroundColor: 'primary.light',
                 }}
               >
-                <Button color="inherit" component={Link} to="/analytics">
+                <Button color="inherit" onClick={() => setCurrentPage('analytics')}>
                   Attendance Analytics
                 </Button>
               </Box>
-              {/* Logout Button Highlighted in a Box */}
               <Box
                 sx={{
                   padding: 1,
@@ -77,14 +90,10 @@ function App() {
                   borderColor: 'secondary.main',
                   borderRadius: 2,
                   backgroundColor: 'secondary.light',
-                  marginLeft: 'auto', // Push to the right
+                  marginLeft: 'auto',
                 }}
               >
-                <Button
-                  color="inherit"
-                  onClick={handleLogout}
-                  sx={{ color: 'white' }}
-                >
+                <Button color="inherit" onClick={handleLogout} sx={{ color: 'white' }}>
                   Logout
                 </Button>
               </Box>
@@ -92,15 +101,8 @@ function App() {
           </Toolbar>
         </AppBar>
       </Box>
-      {/* Main Content Area */}
-      <Container sx={{ marginTop: 4 }}>
-        <Routes>
-          {/* <Route path="/" element={<EmployeeManagement />} />
-          <Route path="/attendance" element={<AttendanceManagement />} />
-          <Route path="/analytics" element={<AttedndanceAnalytics />} /> */}
-        </Routes>
-      </Container>
-    </Router>
+      <Container sx={{ marginTop: 4 }}>{renderPage()}</Container>
+    </>
   );
 }
 
